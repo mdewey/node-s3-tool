@@ -12,19 +12,24 @@ router.get('/', function (req, res, next) {
 
 
 router.get("/json", function (req, res, next) {
-  var geojsonFeature = {
-    "type": "Feature",
-    "properties": {
-      "name": "Coors Field",
-      "amenity": "Baseball Stadium",
-      "popupContent": "This is where the Rockies play!"
-    },
-    "geometry": {
-      "type": "Point",
-      "coordinates": [-104.99404, 39.75621]
+
+  var myBucket = 'atlas-test-2-userId';
+  var myKey = 'feedId-goes-here';
+  var params = {
+    Bucket: myBucket,
+    Key: myKey
+  }
+
+  s3.getObject(params, function (err, data) {
+    if (err) {
+      console.log("crap", err)
     }
-  };
-  res.json(geojsonFeature);
+    else {
+      var fileContents = data.Body.toString();
+      var json = JSON.parse(fileContents);
+      res.json(json);
+    }
+  });
 
 });
 
