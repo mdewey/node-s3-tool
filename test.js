@@ -9,64 +9,92 @@ var myBucket = 'atlas-test-2-userId';
 
 var myKey = 'feedId-goes-here';
 
-var myBody =   { "type": "FeatureCollection",
-    "features": [
-      { "type": "Feature",
-        "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
-        "properties": {"prop0": "value0"}
-        },
-      { "type": "Feature",
-        "geometry": {
-          "type": "LineString",
-          "coordinates": [
-            [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
-            ]
-          },
-        "properties": {
-          "prop0": "value0",
-          "prop1": 0.0
-          }
-        },
-      { "type": "Feature",
-         "geometry": {
-           "type": "Polygon",
-           "coordinates": [
-             [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
-               [100.0, 1.0], [100.0, 0.0] ]
-             ]
-         },
-         "properties": {
-           "prop0": "value0",
-           "prop1": {"this": "that"}
-           }
-         }
-       ]
-     }
+var myBody = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [102.0, 0.5] },
+      "properties": { "prop0": "value0" }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+        ]
+      },
+      "properties": {
+        "prop0": "value0",
+        "prop1": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [[100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
+          [100.0, 1.0], [100.0, 0.0]]
+        ]
+      },
+      "properties": {
+        "prop0": "value0",
+        "prop1": { "this": "that" }
+      }
+    }
+  ]
+}
 
-s3.createBucket({Bucket: myBucket}, function(err, data) {
 
-if (err) {
 
-   console.log(err);
+var addOrUpdateFeed = function (userId, feedId, data, callback) {
 
-   } else {
+  s3.createBucket({ Bucket: myBucket }, function (err, data) {
 
-     params = {Bucket: myBucket, Key: myKey, Body: "updated"};
+    if (err) {
 
-     s3.putObject(params, function(err, data) {
+      console.log(err);
 
-         if (err) {
+    } else {
 
-             console.log(err)
+      params = { Bucket: myBucket, Key: myKey, Body: JSON.stringify(myBody)};
 
-         } else {
+      s3.putObject(params, function (err, data) {
 
-             console.log("Successfully uploaded data to myBucket/myKey");
+        if (err) {
 
-         }
+          console.log(err)
+
+        } else {
+
+          console.log("Successfully uploaded data to myBucket/myKey");
+
+        }
 
       });
 
-   }
+    }
 
-});
+  });
+}
+
+var getFeedAsJson = function (userId, feedId, callback) {
+  var params = {
+    Bucket: myBucket,
+    Key: myKey
+  }
+  s3.getObject(params, function (err, data) {
+    if (err) {
+      console.log("crap", err)
+    }
+    else {
+      var fileContents = data.Body.toString();
+      var json = JSON.parse(fileContents);
+      console.log(json);
+    }
+  });
+}
+//addOrUpdateFeed();
+getFeedAsJson();
