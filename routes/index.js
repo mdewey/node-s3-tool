@@ -13,8 +13,8 @@ router.get('/', function (req, res, next) {
 
 router.get("/json", function (req, res, next) {
 
-  var myBucket = 'atlas-test-2-userId';
-  var myKey = 'feedId-goes-here';
+  var myBucket = 'atlas-test-2-userId'; // should be userId
+  var myKey = 'feedId-goes-here'; // should be feedId
   var params = {
     Bucket: myBucket,
     Key: myKey

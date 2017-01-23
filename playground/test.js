@@ -5,10 +5,6 @@ var s3 = new AWS.S3();
 
 // Bucket names must be unique across all S3 users
 
-var myBucket = 'atlas-test-2-userId';
-
-var myKey = 'feedId-goes-here';
-
 var myBody = {
   "type": "FeatureCollection",
   "features": [
@@ -81,20 +77,7 @@ var addOrUpdateFeed = function (userId, feedId, data, callback) {
 }
 
 var getFeedAsJson = function (userId, feedId, callback) {
-  var params = {
-    Bucket: myBucket,
-    Key: myKey
-  }
-  s3.getObject(params, function (err, data) {
-    if (err) {
-      console.log("crap", err)
-    }
-    else {
-      var fileContents = data.Body.toString();
-      var json = JSON.parse(fileContents);
-      console.log(json);
-    }
-  });
+ 
 }
 //addOrUpdateFeed();
 getFeedAsJson();
